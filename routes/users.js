@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var db = require('./../db/dbManger');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -8,7 +9,7 @@ router.get('/', function(req, res, next) {
 
 // POST 请求登陆
 router.post('/login',function(req,res,next){
-
+  
 });
 
 // POST 请求注册

@@ -8,6 +8,13 @@ To Install:
 ```
 npm install
 ```
+To Run:
+-----------
+```
+if u installed the pm2 and u can it like this , when u is in home workspace
+	pm2 start bin/www && pm2 logs
+```
+And U can visit the website http://127.0.0.1:3000
 
 To Use:
 -------
