@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var error = require('./routes/error');
+var log4js = require('log4js');
 
 var app = express();
 
@@ -22,8 +24,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//日志配置
+log4js.configure({
+ appenders: [
+   { type: 'console' },
+   { type: 'file', filename: 'cheese.log', category: 'cheese' }
+  ]
+});
+
+var logger = log4js.getLogger('cheese');
+logger.setLevel('INFO');
+
 app.use('/', routes);
 app.use('/users', users);
+//404页面配置
+app.use('*',error);
+app.use(log4js.connectLogger(logger, {level:log4js.levels.INFO}));
+// app.use(app.routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
