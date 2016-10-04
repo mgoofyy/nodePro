@@ -10,7 +10,7 @@ router.get('/', function(req, res, next) {
 // POST 请求登陆
 router.post('/login',function(req,res,next){
   // var requestParams = req.body;
-  var user = User.createUser();
+  var user = new User();
   console.log(typeof user);
   user.nickname='coffee';
   user.age=13;
@@ -19,7 +19,7 @@ router.post('/login',function(req,res,next){
   user.signature='go ur rord, let others to say ';
   user.phone = '1881418410';
   user.userType=1;
-  User.save(user,function(err){
+  user.save(user,function(err){
     console.log(err);
   });
   res.send('respond with a resource');
