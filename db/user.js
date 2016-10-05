@@ -20,7 +20,7 @@ Users.prototype.signupSave = function(user,callback) {
         if(err) {
             return callback(err);
         }
-    console.log(result.length + "00000000000");
+
         if(result.length !== 0) {
             return callback(new Error('已经注册'),result);
         } else {

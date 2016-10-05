@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var User = require('./../db/user');
 var ObjectUtil = require('./../utils/objUtil');
-var SIGNUP_ERROR = require('./../common/userError')
+var SIGNUP_ERROR = require('./../common/userError');
+var ResponseJson = require('./../common/response')
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -18,33 +19,22 @@ router.post('/login',function(req,res,next){
 router.post('/signup',function(req,res,next){
   var userInfo = req.body;
   console.log(userInfo);
-  // console.log('receive params {' + ObjectUtil.print(userInfo) + '\n}');
   var user = new User();
   user.phone = userInfo.phone;
   user.password = userInfo.password;
   user.signupSave(user,function(err,result){
-    // console.log('=============' + result.length);
     if(err) {
       if(result.length !== 0) {
-         res.json({
-              "method" : "POST",
-              "code"   : SIGNUP_ERROR.USER_HAVE_SIGNUP,
-              "msg"    : "账户已经注册",
-          });
+            var responseJson = new ResponseJson(null,'POST','账户已经注册','手机号已经注册');
+            res.json(responseJson.setCode(SIGNUP_ERROR.USER_HAVE_SIGNUP))
         }
         else {
-            res.json({
-                "method" : "POST",
-                "code"   : SIGNUP_ERROR.USER_SIGN_UNKNOW,
-                "msg"    : "注册出错",
-            });
+            var responseJson = new ResponseJson(null,'POST','注册出错了','未知错误');
+            res.json(responseJson.setCode(SIGNUP_ERROR.USER_SIGN_UNKNOW))
         }
     } else {
-           res.json({
-              "method" : "POST",
-              "code"   : SIGNUP_ERROR.USER_SIGN_SUCCESS,
-              "msg"    : "账户注册成功",
-            });
+           var responseJson = new ResponseJson(null,'POST','账户注册成功','成功');
+            res.json(responseJson.setCode(SIGNUP_ERROR.USER_SIGN_SUCCESS))
         }
     });
 });
