@@ -12,11 +12,8 @@ Users.prototype.signupSave = function(user,callback) {
     });
 
     //查询数据库 查询某个手机号是否注册过
-    var haveResign = false;
-    // var user
     var searchString = 'SELECT * FROM user WHERE ow_profile_phone =' + mysql.escape(user.phone);
     db.query(searchString,function(err,result){
-        
         if(err) {
             return callback(err);
         }

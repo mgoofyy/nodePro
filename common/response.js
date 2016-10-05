@@ -17,13 +17,13 @@ var ResponseJson = function(data,method,msg,error){
         if(code === 1) {
             return {
                 'data' : data,
-                'mehod' : method,
+                'method' : method,
                 'msg' : msg,
                 'code' : code,
              } 
         } else {
             return {
-                'mehod' : method,
+                'method' : method,
                 'msg' : msg,
                 'code' : code,
                 'error' : error,
