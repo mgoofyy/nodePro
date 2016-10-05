@@ -34,9 +34,12 @@ router.post('/signup',function(req,res,next){
   var user = new User();
   user.phone = userInfo.phone;
   user.password = userInfo.password;
-  user.signupSave(user,function(err,result){
+  user.device = userInfo.device;
+  user.signFrom = userInfo.signFrom;
+  user.signupSave(user,function(err,code){
+    
     if(err) {
-      if(result.length !== 0) {
+      if(code === UserMessage.SIGNUP.USER_HAVE_SIGNUP) {
             var responseJson = new ResponseJson(null,'POST','账户已经注册','手机号已经注册');
             res.json(responseJson.setCode(UserMessage.SIGNUP.USER_HAVE_SIGNUP))
         }
