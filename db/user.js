@@ -3,25 +3,41 @@ var mysql = require('mysql');
 
 var Users = new Function();
 
-Users.prototype.save = function(user,callback) {
+Users.prototype.signupSave = function(user,callback) {
     db.open(function(error){
         if(error) {
             console.log('连接数据库出错' + error);
             return;
         }
     });
-    console.log(user.nickname);
-    var queryString = 'INSERT INTO user (ow_profile_nickname,ow_profile_place,ow_profile_age,ow_profile_sex,ow_profile_signature,ow_profile_phone,ow_profile_userType) VALUES (' + mysql.escape(this.nickname) + ',' + mysql.escape(this.place)+ ',' + mysql.escape(this.age)+ ',' + mysql.escape(this.sex)+ ',' + mysql.escape(this.signature)+ ',' + mysql.escape(this.phone)+ ',' + mysql.escape(this.userType) + ')';
-    console.log(queryString);
-    db.query(queryString,function(err){
-        console.log(err);
-        if(err) {
-            db.close(function(err){
 
+    //查询数据库 查询某个手机号是否注册过
+    var haveResign = false;
+    // var user
+    var searchString = 'SELECT * FROM user WHERE ow_profile_phone =' + mysql.escape(user.phone);
+    db.query(searchString,function(err,result){
+        
+        if(err) {
+            return callback(err);
+        }
+    console.log(result.length + "00000000000");
+        if(result.length !== 0) {
+            return callback(new Error('已经注册'),result);
+        } else {
+            var queryString = 'INSERT INTO user (ow_profile_phone,ow_profile_password) VALUES (' + mysql.escape(user.phone)+ ',' + mysql.escape(user.password) + ')';
+            console.log(queryString);
+            db.query(queryString,function(err){
+                console.log(err);
+                db.close();
+                if(err) {
+                    return callback(err);
+                }
+                return callback(null); 
             });
-            return;
         }
     });
+
+    
 }
 
 module.exports = Users;

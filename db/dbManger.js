@@ -28,18 +28,15 @@ var DBManger = {
                 callback(error);
                 return;
             }
+            callback(error,rows,fields);
             console.log(queryString + "操作数据库成功");
         });
     },
 
     //关闭数据库
-    close:function(callback) {
+    close:function() {
         connection.end(function(error){
-            if(error) {
-                callback(error);
-                return;
-            }
-        console.log('关闭连接数据库成功');
+            console.log('关闭连接数据库成功');
         });
     }
 };
