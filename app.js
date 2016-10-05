@@ -9,8 +9,13 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var error = require('./routes/error');
 var log4js = require('log4js');
+var jwt = require('jwt-simple');
+var CONFIG = require('./config');
 
 var app = express();
+
+//token加密配置
+app.set(CONFIG.TOKEN.JWT_SIMPLE_TOKEN_APP_SECRET_KEY,CONFIG.TOKEN.JWT_SIMPLE_TOKEN_APP_SECRET_STRING);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -1,0 +1,9 @@
+var OW_TOKEN_CONFIG = {
+    //用于JWT框架加密key string  有效期
+    JWT_SIMPLE_TOKEN_APP_SECRET_KEY : 'jwt_simple_token_app_key',
+    JWT_SIMPLE_TOKEN_APP_SECRET_STRING : 'ML50ANMLOZURHUT4FKZEGVCOSH2MIS',
+    JWT_SIMPLE_TOKEN_APP_SECRET_EXPIRES : 15,
+
+};
+
+module.exports.TOKEN = OW_TOKEN_CONFIG;
