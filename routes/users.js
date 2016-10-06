@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('./../db/user');
 var ObjectUtil = require('./../utils/objUtil');
-var UserMessage = require('./../common/UserMessage');
+var UserMessage = require('./../common/userMessage');
 var ResponseJson = require('./../common/response');
 var TokenManger = require('./../common/tokenVerfity');
 
@@ -78,30 +78,30 @@ router.post('/info', function (req, res, next) {
     console.log(token);
     var tokenTmp = new TokenManger.token();
     tokenTmp.token = token;
-    tokenTmp.verfity(function(err,code,uid){
-        if(code === TokenManger.TOKEN_INFO.TOKEN_IS_NULL) {
+    tokenTmp.verfity(function (err, code, uid) {
+        if (code === TokenManger.TOKEN_INFO.TOKEN_IS_NULL) {
             var responseJson = new ResponseJson(null, 'POST', 'token为空', '当前用户尚未登录');
             res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_NULL));
-        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL) {
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL) {
             var user = new User();
-            user.loadUserinfo(uid,function(err,code,userinfo){
-                if(err) {
+            user.loadUserinfo(uid, function (err, code, userinfo) {
+                if (err) {
                     var responseJson = new ResponseJson(null, 'POST', '数据库出错', '数据库出错，请联系服务器管理员');
                     res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_SQL_ERROR));
                 } else {
                     var responseJson = new ResponseJson(userinfo, 'POST', 'token合法', '当前用户在线');
                     res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL));
                 }
-                
+
             });
-            
-        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL) {
+
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL) {
             var responseJson = new ResponseJson(null, 'POST', 'token不合法', '当前token非法');
             res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL));
-        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE) {
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE) {
             var responseJson = new ResponseJson(null, 'POST', 'token过期', '请重新登录');
             res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE));
-        } 
+        }
     });
     // res.send('respond with a resource');
 });

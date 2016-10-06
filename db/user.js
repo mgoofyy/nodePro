@@ -86,22 +86,22 @@ Users.prototype.verfityPassword = function (userinfo, callback) {
 }
 
 //从数据库中查询用户的信息
-Users.prototype.loadUserinfo = function(userid,callback) {
-    db.open(function(error){
-        if(error) {
-            return callback(new Error('打开数据库出错'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
+Users.prototype.loadUserinfo = function (userid, callback) {
+    db.open(function (error) {
+        if (error) {
+            return callback(new Error('打开数据库出错'), USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
         }
     });
     const escapeUserId = mysql.escape(userid);
-    const searchString = 'SELECT * FROM user WHERE ow_profile_userid = ' + escapeUserId ;
-    
-    db.query(searchString,function(error,result){
+    const searchString = 'SELECT * FROM user WHERE ow_profile_userid = ' + escapeUserId;
+
+    db.query(searchString, function (error, result) {
         db.close();
-        if(error) {
-            return callback(new Error('查询数据库出错'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
+        if (error) {
+            return callback(new Error('查询数据库出错'), USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
         }
-        if(result.length === 0) {
-            return callback(new Error('没有该用户,数据库内部错误'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL)
+        if (result.length === 0) {
+            return callback(new Error('没有该用户,数据库内部错误'), USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL)
         } else {
             return callback(null, USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_SUCCESS, result[0]);
         }
