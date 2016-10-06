@@ -35,12 +35,8 @@ router.post('/login', function (req, res, next) {
                 res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_UNKNOW));
             }
         } else {
-            TokenManger.token.encode('zhsnagn', function (token) {
-                var data = {
-                    token: token,
-                    phone: userInfo.phone,
-                };
-                result.token = data;
+            TokenManger.token.encode(result.ow_profile_userid, function (token) {
+                result.token = token;
                 var responseJson = new ResponseJson(result, 'POST', '登陆成功', '请求成功');
                 res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_SUCCESS));
             });
@@ -87,8 +83,18 @@ router.post('/info', function (req, res, next) {
             var responseJson = new ResponseJson(null, 'POST', 'token为空', '当前用户尚未登录');
             res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_NULL));
         } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL) {
-            var responseJson = new ResponseJson({userid:uid}, 'POST', 'token合法', '当前用户在线');
-            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL));
+            var user = new User();
+            user.loadUserinfo(uid,function(err,code,userinfo){
+                if(err) {
+                    var responseJson = new ResponseJson(null, 'POST', '数据库出错', '数据库出错，请联系服务器管理员');
+                    res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_SQL_ERROR));
+                } else {
+                    var responseJson = new ResponseJson(userinfo, 'POST', 'token合法', '当前用户在线');
+                    res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL));
+                }
+                
+            });
+            
         } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL) {
             var responseJson = new ResponseJson(null, 'POST', 'token不合法', '当前token非法');
             res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL));

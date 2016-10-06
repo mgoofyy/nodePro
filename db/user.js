@@ -2,15 +2,14 @@ var db = require('./dbManger');
 var mysql = require('mysql');
 var ObjectUtil = require('./../utils/objUtil');
 var moment = require('moment');
-var USER_SIGNUP_STATUS = require('./../common/userMessage').SIGNUP;
-var USER_LOGIN_STATUS = require('./../common/userMessage').LOGIN;
+var USER_MESSAGE = require('./../common/userMessage');
 
 var Users = new Function();
 
 Users.prototype.signupSave = function (user, callback) {
     db.open(function (error) {
         if (error) {
-            return callback(new Error('打开数据库出错'), USER_SIGNUP_STATUS.USER_SIGN_FAIL);
+            return callback(new Error('打开数据库出错'), USER_MESSAGE.SIGNUP.USER_SIGN_FAIL);
         }
     });
 
@@ -21,25 +20,25 @@ Users.prototype.signupSave = function (user, callback) {
     db.query(searchString, function (err, result) {
         if (err) {
             db.close();
-            return callback(err, USER_SIGNUP_STATUS.USER_SIGN_FAIL);
+            return callback(err, USER_MESSAGE.SIGNUP.USER_SIGN_FAIL);
         }
 
         if (result.length !== 0) {
             db.close();
-            return callback(new Error('已经注册'), USER_SIGNUP_STATUS.USER_HAVE_SIGNUP);
+            return callback(new Error('已经注册'), USER_MESSAGE.SIGNUP.USER_HAVE_SIGNUP);
         } else {
             const queryString = 'INSERT INTO user (ow_profile_phone,ow_profile_password) VALUES (' + escapePhone + ',' + escapePassword + ')';
             console.log(queryString);
             db.query(queryString, function (err) {
                 if (err) {
                     db.close();
-                    return callback(err, USER_SIGNUP_STATUS.USER_SIGN_FAIL);
+                    return callback(err, USER_MESSAGE.SIGNUP.USER_SIGN_FAIL);
                 }
                 //获取UID信息
                 db.query(searchString, function (err, result) {
                     if (err) {
                         db.close();
-                        return callback(err, USER_SIGNUP_STATUS.USER_SIGN_FAIL);
+                        return callback(err, USER_MESSAGE.SIGNUP.USER_SIGN_FAIL);
                     }
                     const userid = result[0].ow_profile_userid;
                     console.log(ObjectUtil.print(result[0]));
@@ -52,9 +51,9 @@ Users.prototype.signupSave = function (user, callback) {
                     db.query(queryStringToUserDeviceInfo, function (err) {
                         db.close();
                         if (err) {
-                            return callback(err, USER_SIGNUP_STATUS.USER_SIGN_FAIL);
+                            return callback(err, USER_MESSAGE.SIGNUP.USER_SIGN_FAIL);
                         }
-                        return callback(null, USER_SIGNUP_STATUS.USER_LOGIN_SUCCESS);
+                        return callback(null, USER_MESSAGE.SIGNUP.USER_LOGIN_SUCCESS);
                     });
 
                 })
@@ -66,7 +65,7 @@ Users.prototype.signupSave = function (user, callback) {
 Users.prototype.verfityPassword = function (userinfo, callback) {
     db.open(function (error) {
         if (error) {
-            return callback(new Error('打开数据库出错'), USER_LOGIN_STATUS.USER_LOGIN_FAIL);
+            return callback(new Error('打开数据库出错'), USER_MESSAGE.LOGIN.USER_LOGIN_FAIL);
         }
     });
     const escapePhone = mysql.escape(userinfo.phone);
@@ -76,12 +75,35 @@ Users.prototype.verfityPassword = function (userinfo, callback) {
     db.query(searchString, function (err, result) {
         db.close();
         if (err) {
-            return callback(new Error('查询数据库出错'), USER_LOGIN_STATUS.USER_LOGIN_FAIL);
+            return callback(new Error('查询数据库出错'), USER_MESSAGE.LOGIN.USER_LOGIN_FAIL);
         }
         if (result.length === 0) {
-            return callback(new Error('没有该用户'), USER_LOGIN_STATUS.USER_LOGIN_NOT_USER);
+            return callback(new Error('没有该用户'), USER_MESSAGE.LOGIN.USER_LOGIN_NOT_USER);
         } else {
-            return callback(null, USER_LOGIN_STATUS.USER_LOGIN_SUCCESS, result[0]);
+            return callback(null, USER_MESSAGE.LOGIN.USER_LOGIN_SUCCESS, result[0]);
+        }
+    });
+}
+
+//从数据库中查询用户的信息
+Users.prototype.loadUserinfo = function(userid,callback) {
+    db.open(function(error){
+        if(error) {
+            return callback(new Error('打开数据库出错'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
+        }
+    });
+    const escapeUserId = mysql.escape(userid);
+    const searchString = 'SELECT * FROM user WHERE ow_profile_userid = ' + escapeUserId ;
+    
+    db.query(searchString,function(error,result){
+        db.close();
+        if(error) {
+            return callback(new Error('查询数据库出错'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL);
+        }
+        if(result.length === 0) {
+            return callback(new Error('没有该用户,数据库内部错误'),USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_FAIL)
+        } else {
+            return callback(null, USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_SUCCESS, result[0]);
         }
     });
 }

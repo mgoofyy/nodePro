@@ -12,6 +12,12 @@ var login = {
     USER_LOGIN_UNKNOW: 3,
 };
 
+var loadUserinfo = {
+    LOAD_USER_INFO_FAIL : 0,   //内部数据库错误
+    LOAD_USER_INFO_SUCCESS : 1, //查询成功
+    LOAD_USER_INFO_UNKNOW : 2,  //未知错误
+}
+
 // var token = {
 //     USER_TOKEN_IS_NIL : 0,      //token为空
 //     USER_TOKEN_IS_LEGAL : 1,   //token 合法
@@ -21,4 +27,5 @@ var login = {
 
 module.exports.SIGNUP = userSignUp;
 module.exports.LOGIN = login;
+module.exports.LOAD_USER_INFO = loadUserinfo;
 // module.exports.TOKEN = token;

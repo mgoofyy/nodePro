@@ -8,6 +8,7 @@ const TOKEN_INFO = {
     TOKEN_IS_LEGAL: 1, // 合法
     TOKEN_IS_ILLEGAL: 2, // 不合法的token
     TOKEN_IS_OUT_DATE: 3, // 过期的
+    TOKEN_SQL_ERROR : 4,  //数据库错误
 }
 
 var Token = new Function();
