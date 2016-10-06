@@ -1,9 +1,9 @@
 var mysql = require('mysql');
 
 var config = {
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'mysql',
+    host: '121.42.163.107',
+    user: 'goofyy',
+    password: 'goofyyPassword',
     port: '3306',
     database: 'oneWord',
 };
@@ -48,6 +48,17 @@ var DBManger = {
                 return callback(error);
             }
             console.log(queryString + "操作数据库成功");
+            return callback(error, rows, fields);
+        });
+    },
+
+    update : function (updateString,updateParams,callback) {
+        var connection = initializeConnection(config);
+        connection.query(updateString,updateParams, function (error, rows, fields) {
+            if (error) {
+                return callback(error);
+            }
+            console.log(updateString + "操作数据库成功");
             return callback(error, rows, fields);
         });
     },

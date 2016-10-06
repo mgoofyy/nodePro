@@ -21,14 +21,13 @@ Token.prototype.verfity = function (callback) {
             var decoded = jwt.decode(token, CONFIG.TOKEN.JWT_SIMPLE_TOKEN_APP_SECRET_STRING);
             console.log(decoded)
             if (decoded.expires <= Date.now()) {
-                console.log(decoded)
                 return callback(new Error('token已经失效'), TOKEN_INFO.TOKEN_IS_OUT_DATE);
             } else {
-                console.log(decoded)
+                console.log('当前token解密后' + decoded)
                 return callback(null, TOKEN_INFO.TOKEN_IS_LEGAL, decoded.userid);
             }
         } catch (err) {
-            return callback(new Error('token非法'), TOKEN_INFO.TOKEN_IS_ILLEGAL);
+            return callback(err, TOKEN_INFO.TOKEN_IS_ILLEGAL);
         }
     } else {
         return callback(new Error('token不存在'), TOKEN_INFO.TOKEN_IS_NULL);

@@ -18,6 +18,12 @@ var loadUserinfo = {
     LOAD_USER_INFO_UNKNOW : 2,  //未知错误
 }
 
+var updateUserinfo = {
+    UPDATE_USER_INFO_FAIL : 0,
+    UPDATE_USER_INFO_SUCCESS : 1,
+    UPDATE_USER_INFO_UNKNOW : 2,
+}
+
 // var token = {
 //     USER_TOKEN_IS_NIL : 0,      //token为空
 //     USER_TOKEN_IS_LEGAL : 1,   //token 合法
@@ -28,4 +34,5 @@ var loadUserinfo = {
 module.exports.SIGNUP = userSignUp;
 module.exports.LOGIN = login;
 module.exports.LOAD_USER_INFO = loadUserinfo;
+module.exports.UPDATE_USER_INFO = updateUserinfo;
 // module.exports.TOKEN = token;

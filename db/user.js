@@ -65,7 +65,7 @@ Users.prototype.signupSave = function (user, callback) {
 Users.prototype.verfityPassword = function (userinfo, callback) {
     db.open(function (error) {
         if (error) {
-            return callback(new Error('打开数据库出错'), USER_MESSAGE.LOGIN.USER_LOGIN_FAIL);
+            return callback(error, USER_MESSAGE.LOGIN.USER_LOGIN_FAIL);
         }
     });
     const escapePhone = mysql.escape(userinfo.phone);
@@ -105,6 +105,25 @@ Users.prototype.loadUserinfo = function (userid, callback) {
         } else {
             return callback(null, USER_MESSAGE.LOAD_USER_INFO.LOAD_USER_INFO_SUCCESS, result[0]);
         }
+    });
+}
+
+//更改数据库中用户信息
+Users.prototype.updateUserinfo = function (userinfo, callback) {
+    db.open(function (error) {
+        if (error) {
+            return callback(error, USER_MESSAGE.UPDATE_USER_INFO.UPDATE_USER_INFO_FAIL);
+        }
+    });
+    const updateString = 'UPDATE user SET ow_profile_nickname=?,ow_profile_place=?,ow_profile_age=?,ow_profile_sex=?,ow_profile_signature=? WHERE ow_profile_userid=?';
+    const updateParams = [mysql.escape(userinfo.nickname),mysql.escape(userinfo.place),mysql.escape(userinfo.age),mysql.escape(userinfo.sex),mysql.escape(userinfo.signature),userinfo.userid];
+    db.update(updateString,updateParams,function(error,result){
+        db.close();
+        console.log(error);
+        if(error) {
+            return callback(error,USER_MESSAGE.UPDATE_USER_INFO.UPDATE_USER_INFO_FAIL);
+        }
+        return callback(null,USER_MESSAGE.UPDATE_USER_INFO.UPDATE_USER_INFO_SUCCESS);
     });
 }
 

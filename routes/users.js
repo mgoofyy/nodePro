@@ -106,4 +106,37 @@ router.post('/info', function (req, res, next) {
     // res.send('respond with a resource');
 });
 
+router.post('/info/update',function(req,res,next){
+    var token = req.headers.token;
+    var userInfo = req.body;
+    var tokenTmp = new TokenManger.token();
+    tokenTmp.token = token;
+    tokenTmp.verfity(function (err, code, uid) {
+        console.log(err + code + uid);
+        if (code === TokenManger.TOKEN_INFO.TOKEN_IS_NULL) {
+            var responseJson = new ResponseJson(null, 'POST', 'token为空', '当前用户尚未登录');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_NULL));
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL) {
+            var user = new User();
+            userInfo.userid = uid;
+            user.updateUserinfo(userInfo,function(error,code){
+                if(error) {
+                    var responseJson = new ResponseJson(null, 'POST', '数据库出错', '数据库出错，请联系服务器管理员');
+                    res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_SQL_ERROR));
+                } else {
+                    var responseJson = new ResponseJson(userInfo, 'POST', 'token合法', '更新用户信息成功');
+                    res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL));
+                }
+            });
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL) {
+            var responseJson = new ResponseJson(null, 'POST', 'token不合法', '当前token非法');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_0ILLEGAL));
+        } else if (code === TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE) {
+            var responseJson = new ResponseJson(null, 'POST', 'token过期', '请重新登录');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE));
+        }
+    });
+
+});
+
 module.exports = router;
