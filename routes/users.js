@@ -15,15 +15,38 @@ router.get('/', function(req, res, next) {
 router.post('/login',function(req,res,next){
     var userInfo = req.body;
     console.log(userInfo);
-   TokenManger.token.encode('zhsnagn',function(token){
-       var data = {
-           token : token,
-           phone : userInfo.phone,
-       };
-       var responseJson = new ResponseJson(data,'POST','登陆成功','登陆成功');
-       res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_SUCCESS))
-   });
-    
+
+    var user = new User();
+    user.phone = userInfo.phone;
+    user.password = userInfo.password;
+    user.device = userInfo.device;
+
+    user.verfityPassword(user,function(err,code,result){
+        console.log(err);
+        if(err) {
+            if(code === UserMessage.LOGIN.USER_LOGIN_FAIL) {
+                var responseJson = new ResponseJson(null,'POST','登陆失败','内部错误');
+                res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_FAIL));
+            } else if (code === UserMessage.LOGIN.USER_LOGIN_NOT_USER){
+                var responseJson = new ResponseJson(null,'POST','登陆失败','不存在该用户');
+                res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_NOT_USER));
+            } else {
+                var responseJson = new ResponseJson(null,'POST','登陆失败','未知错误');
+                res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_UNKNOW));
+            }
+        } 
+        else {
+            TokenManger.token.encode('zhsnagn',function(token){
+            var data = {
+                token : token,
+                phone : userInfo.phone,
+            };
+            result.token = data;
+            var responseJson = new ResponseJson(result,'POST','登陆成功','请求成功');
+            res.json(responseJson.setCode(UserMessage.LOGIN.USER_LOGIN_SUCCESS));
+            });
+        }
+    });   
 });
 
 

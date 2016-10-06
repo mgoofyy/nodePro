@@ -1,21 +1,40 @@
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
+var config = {
         host : '127.0.0.1',
         user : 'root',
         password : 'mysql',
         port : '3306',
         database: 'oneWord',
-    });
+    };
 
+function initializeConnection(config) {
+    function addDisconnectHandler(connection) {
+        connection.on("error", function (error) {
+            if (error instanceof Error) {
+                if (error.code === "PROTOCOL_CONNECTION_LOST") {
+                    console.error(error.stack);
+                    console.log("Lost connection. Reconnecting...");
+
+                    initializeConnection(connection.config);
+                } else if (error.fatal) {
+                    throw error;
+                }
+            }
+        });
+    }
+
+    var connection = mysql.createConnection(config);
+    addDisconnectHandler(connection);
+    return connection;
+}
 var DBManger = {
-
     //连接到数据库
     open:function(callback) {
+        var connection = initializeConnection(config);
         connection.connect(function(error){
             if(error) {
-                callback(error);
-                return;
+                return callback(error);
             }
         console.log('连接数据库成功');
         });
@@ -23,20 +42,23 @@ var DBManger = {
 
     //执行sql语句
     query : function(queryString,callback) {
+        var connection = initializeConnection(config);
         connection.query(queryString,function(error,rows,fields){
             if(error){
-                callback(error);
-                return;
+               return callback(error);
             }
-            callback(error,rows,fields);
             console.log(queryString + "操作数据库成功");
+            return callback(error,rows,fields);
         });
     },
 
     //关闭数据库
     close:function() {
+        var connection = initializeConnection(config);
         connection.end(function(error){
-            console.log('关闭连接数据库成功');
+            if(!error) {
+                 console.log('关闭连接数据库成功');
+            }      
         });
     }
 };
