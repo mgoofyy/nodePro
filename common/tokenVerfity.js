@@ -4,30 +4,33 @@ var moment = require('moment');
 var app = require('express')();
 
 const TOKEN_INFO = {
-    TOKEN_IS_OUTDATE: 0, // 过期
-    TOKEN_IS_ILLEGAL: 1, // 不合法
-    TOKEN_IS_LEGAL: 2, // 合法的token
-    TOKEN_IS_DISABLE: 3, // 不可用的token
+    TOKEN_IS_NULL: 0, // 空的token
+    TOKEN_IS_LEGAL: 1, // 合法
+    TOKEN_IS_ILLEGAL: 2, // 不合法的token
+    TOKEN_IS_OUT_DATE: 3, // 过期的
 }
 
 var Token = new Function();
 
 Token.prototype.verfity = function (callback) {
-    var token = this;
-    if (token.token) {
+    var token = this.token;
+    console.log(token);
+    if (token) {
         try {
             var decoded = jwt.decode(token, CONFIG.TOKEN.JWT_SIMPLE_TOKEN_APP_SECRET_STRING);
-            if (decoded.exp <= Date.now()) {
-                return callback(new Error('token已经失效'), TOKEN_INFO.TOKEN_IS_OUTDATE);
+            console.log(decoded)
+            if (decoded.expires <= Date.now()) {
+                console.log(decoded)
+                return callback(new Error('token已经失效'), TOKEN_INFO.TOKEN_IS_OUT_DATE);
             } else {
-                return callback(null, TOKEN_INFO.TOKEN_IS_OUTDATE, decoded.userid);
+                console.log(decoded)
+                return callback(null, TOKEN_INFO.TOKEN_IS_LEGAL, decoded.userid);
             }
-
         } catch (err) {
             return callback(new Error('token非法'), TOKEN_INFO.TOKEN_IS_ILLEGAL);
         }
     } else {
-        return callback(new Error('token不存在'), TOKEN_INFO.TOKEN_IS_DISABLE);
+        return callback(new Error('token不存在'), TOKEN_INFO.TOKEN_IS_NULL);
     }
 };
 
@@ -43,4 +46,4 @@ Token.encode = function (userid, callback) {
 };
 
 module.exports.token = Token;
-module.exports.tokenInfo = TOKEN_INFO;
+module.exports.TOKEN_INFO = TOKEN_INFO;

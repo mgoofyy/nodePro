@@ -50,7 +50,6 @@ Users.prototype.signupSave = function (user, callback) {
                     const queryStringToUserDeviceInfo = 'INSERT INTO user_sign_info (ow_profile_userid,ow_account_from,ow_account_last_login,ow_account_signup_time,ow_account_online_time,ow_account_devices) VALUES (' +
                         userid + ',' + signFrom + ',' + nowTimestamp + ',' + nowTimestamp + ',' + '0' + ',' + device + ')';
                     db.query(queryStringToUserDeviceInfo, function (err) {
-                        console.log('-------------------');
                         db.close();
                         if (err) {
                             return callback(err, USER_SIGNUP_STATUS.USER_SIGN_FAIL);
@@ -67,7 +66,6 @@ Users.prototype.signupSave = function (user, callback) {
 Users.prototype.verfityPassword = function (userinfo, callback) {
     db.open(function (error) {
         if (error) {
-            console.log('========================' + error);
             return callback(new Error('打开数据库出错'), USER_LOGIN_STATUS.USER_LOGIN_FAIL);
         }
     });

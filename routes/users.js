@@ -63,22 +63,41 @@ router.post('/signup', function (req, res, next) {
         if (err) {
             if (code === UserMessage.SIGNUP.USER_HAVE_SIGNUP) {
                 var responseJson = new ResponseJson(null, 'POST', '账户已经注册', '手机号已经注册');
-                res.json(responseJson.setCode(UserMessage.SIGNUP.USER_HAVE_SIGNUP))
+                res.json(responseJson.setCode(UserMessage.SIGNUP.USER_HAVE_SIGNUP));
             } else {
                 var responseJson = new ResponseJson(null, 'POST', '注册出错了', '未知错误');
-                res.json(responseJson.setCode(UserMessage.SIGNUP.USER_SIGN_UNKNOW))
+                res.json(responseJson.setCode(UserMessage.SIGNUP.USER_SIGN_UNKNOW));
             }
         } else {
             var responseJson = new ResponseJson(null, 'POST', '账户注册成功', '成功');
-            res.json(responseJson.setCode(UserMessage.SIGNUP.USER_SIGN_SUCCESS))
+            res.json(responseJson.setCode(UserMessage.SIGNUP.USER_SIGN_SUCCESS));
         }
     });
 });
 
 
 // POST 获取用户信息
-router.post('/info', function (req, res, nex) {
-    res.send('respond with a resource');
+router.post('/info', function (req, res, next) {
+    var token = req.headers.token;
+    console.log(token);
+    var tokenTmp = new TokenManger.token();
+    tokenTmp.token = token;
+    tokenTmp.verfity(function(err,code,uid){
+        if(code === TokenManger.TOKEN_INFO.TOKEN_IS_NULL) {
+            var responseJson = new ResponseJson(null, 'POST', 'token为空', '当前用户尚未登录');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_NULL));
+        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL) {
+            var responseJson = new ResponseJson({userid:uid}, 'POST', 'token合法', '当前用户在线');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_LEGAL));
+        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL) {
+            var responseJson = new ResponseJson(null, 'POST', 'token不合法', '当前token非法');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_ILLEGAL));
+        } else  if (code === TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE) {
+            var responseJson = new ResponseJson(null, 'POST', 'token过期', '请重新登录');
+            res.json(responseJson.setCode(TokenManger.TOKEN_INFO.TOKEN_IS_OUT_DATE));
+        } 
+    });
+    // res.send('respond with a resource');
 });
 
 module.exports = router;
