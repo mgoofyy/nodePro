@@ -1,5 +1,5 @@
-var ResponseJson = function(data,method,msg,error){
-    
+var ResponseJson = function (data, method, msg, error) {
+
     //数据返回格式
     // {
     //     'code' : 1,
@@ -13,21 +13,21 @@ var ResponseJson = function(data,method,msg,error){
     //请求返回的数据;
     var code = 100;
 
-    this.setCode = function(code) {
-        if(code === 1) {
+    this.setCode = function (code) {
+        if (code === 1) {
             return {
-                'data' : data,
-                'method' : method,
-                'msg' : msg,
-                'code' : code,
-             } 
+                'data': data,
+                'method': method,
+                'msg': msg,
+                'code': code,
+            }
         } else {
             return {
-                'method' : method,
-                'msg' : msg,
-                'code' : code,
-                'error' : error,
-            } 
+                'method': method,
+                'msg': msg,
+                'code': code,
+                'error': error,
+            }
         }
     }
 }

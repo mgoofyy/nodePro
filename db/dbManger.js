@@ -1,12 +1,12 @@
 var mysql = require('mysql');
 
 var config = {
-        host : '127.0.0.1',
-        user : 'root',
-        password : 'mysql',
-        port : '3306',
-        database: 'oneWord',
-    };
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'mysql',
+    port: '3306',
+    database: 'oneWord',
+};
 
 function initializeConnection(config) {
     function addDisconnectHandler(connection) {
@@ -30,35 +30,35 @@ function initializeConnection(config) {
 }
 var DBManger = {
     //连接到数据库
-    open:function(callback) {
+    open: function (callback) {
         var connection = initializeConnection(config);
-        connection.connect(function(error){
-            if(error) {
+        connection.connect(function (error) {
+            if (error) {
                 return callback(error);
             }
-        console.log('连接数据库成功');
+            console.log('连接数据库成功');
         });
     },
 
     //执行sql语句
-    query : function(queryString,callback) {
+    query: function (queryString, callback) {
         var connection = initializeConnection(config);
-        connection.query(queryString,function(error,rows,fields){
-            if(error){
-               return callback(error);
+        connection.query(queryString, function (error, rows, fields) {
+            if (error) {
+                return callback(error);
             }
             console.log(queryString + "操作数据库成功");
-            return callback(error,rows,fields);
+            return callback(error, rows, fields);
         });
     },
 
     //关闭数据库
-    close:function() {
+    close: function () {
         var connection = initializeConnection(config);
-        connection.end(function(error){
-            if(!error) {
-                 console.log('关闭连接数据库成功');
-            }      
+        connection.end(function (error) {
+            if (!error) {
+                console.log('关闭连接数据库成功');
+            }
         });
     }
 };
