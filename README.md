@@ -25,6 +25,7 @@ For Account:
 ```
 /user/signup  			POST 	user sign up
 /user/login 			POST	user login in 
+/user/info				POST	fetch user info
 /user/login/verfity  	GET 	verfity code to login
 /user/signup/verfity 	GET 	verfity code to signup
 
@@ -38,13 +39,22 @@ echo '{"phone":"18814182331","password":"sdljkfsadljfkssdf"}' | http post http:/
 
 Response:
 {
-	"code": 1,
-	"data": {
-		   "phone": "18814182331",
-		   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOiJ6aHNuYWduIiwiZXhwaXJlcyI6MTQ3Njk5MDg3MzU4MH0.Fbv2XOdMcQeO14rTH0_wBLKo2e9HQhu5CXYntbx07jU"
-	},
-	"method": "POST",
-	"msg": "登陆成功"
+    "code": 1,
+    "data": {
+        "ow_profile_age": 1,
+        "ow_profile_lock": 0,
+        "ow_profile_nickname": null,
+        "ow_profile_password": "hellozhangsan",
+        "ow_profile_phone": "18814182331",
+        "ow_profile_place": null,
+        "ow_profile_sex": 2,
+        "ow_profile_signature": null,
+        "ow_profile_userType": 0,
+        "ow_profile_userid": 10013,
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEwMDEzLCJleHBpcmVzIjoxNDc3MDQwOTQxMTA1fQ.Uw20mqtxANfUoBGB5UYFuVMRd6edN4o3uR9vr3H7EBA"
+    },
+    "method": "POST",
+    "msg": "登陆成功"
 }
 ```
 #####Sign Up Scrpit
@@ -75,5 +85,44 @@ ERROR - 02
     "msg": "注册出错了"
 }
 ```
+#####Fetch User Info
+```
+http POST http://localhost:3000/users/info token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjEwMDEzLCJleHBpcmVzIjoxNDc3MDQwOTQxMTA1fQ.Uw20mqtxANfUoBGB5UYFuVMRd6edN4o3uR9vr3H7EBA
 
+Response
+ 
+Success:
+{
+    "code": 1,
+    "data": {
+        "ow_profile_age": 1,
+        "ow_profile_lock": 0,
+        "ow_profile_nickname": null,
+        "ow_profile_password": "hellozhangsan",
+        "ow_profile_phone": "18814182331",
+        "ow_profile_place": null,
+        "ow_profile_sex": 2,
+        "ow_profile_signature": null,
+        "ow_profile_userType": 0,
+        "ow_profile_userid": 10013
+    },
+    "method": "POST",
+    "msg": "token合法"
+}
+
+Error - 0
+{
+    "code": 0,
+    "error": "当前用户尚未登录",
+    "method": "POST",
+    "msg": "token为空"
+}
+ERROR - 1
+{
+    "code": 2,
+    "error": "当前token非法",
+    "method": "POST",
+    "msg": "token不合法"
+}
+```
 
